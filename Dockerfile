@@ -32,7 +32,7 @@ USER monero
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["monerod", ""]
+CMD ["monerod", "--non-interactive", "--data-dir=/var/lib/monero", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=18081", "--confirm-external-bind", "--no-igd"]
 
 EXPOSE 18080
 EXPOSE 18081
