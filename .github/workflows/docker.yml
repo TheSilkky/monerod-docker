@@ -1,0 +1,20 @@
+name: Docker Build & Push
+
+on:
+  push:
+    paths-ignore:
+      - "**.md"
+      - "/**.gitignore"
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  monerod:
+    uses: thesilkky/workflows/.github/workflows/docker-build-push.yml@main
+    with:
+      image: thesilkky/monerod
+      image-version: '0.18.3.2'
+      context: .
+      build-args: MONERO_VERSION=0.18.3.2
+      platforms: linux/amd64
+      dockerhub: false
