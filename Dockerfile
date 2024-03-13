@@ -1,4 +1,4 @@
-ARG ALPINE_VERSION=3.19
+ARG DEBIAN_VERSION=3.19
 ARG MONERO_VERSION
 ARG UID=568
 ARG GID=568
@@ -6,25 +6,26 @@ ARG GID=568
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM alpine:${ALPINE_VERSION}
+FROM debian:${DEBIAN_VERSION}-slim
 
 ARG MONERO_VERSION
 ARG UID
 ARG GID
 
-RUN apk add --no-cache \
-    ca-certificates \
-    tzdata
+RUN apt update && apt install -y \
+    --no-install-recommends \
+    ca-certificates && \
+    apt clean
 
 RUN wget --quiet -O /tmp/monero.tar.bz2 "https://downloads.getmonero.org/cli/monero-linux-x64-v${MONERO_VERSION}.tar.bz2" && \
-    tar xvf /tmp/monero.tar.bz2 -C /usr/local/bin monerod && \
+    tar xvf /tmp/monero.tar.bz2 -C /usr/local/bin "monero-x86_64-linux-gnu-v${MONERO_VERSION}/monerod" && \
     rm -f /tmp/monero.tar.bz2 && \
     chmod +x /usr/local/bin/monerod
 
 COPY --chmod=0755 entrypoint.sh /
 
-RUN addgroup -S -g ${GID} monero && \
-    adduser -S -H -D -G monero -u ${UID} -g "" -s /sbin/nologin monero && \
+RUN addgroup --system --gid ${GID} monero && \
+    adduser --system --no-create-home --disabled-password --gid ${GID} --uid ${UID} --gecos "" --shell /sbin/nologin monero && \
     mkdir -p /var/lib/monero && \
     chown -R monero:monero /var/lib/monero
 
