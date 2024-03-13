@@ -20,8 +20,9 @@ RUN apt update && apt install -y \
     apt clean
 
 RUN wget --quiet -O /tmp/monero.tar.bz2 "https://downloads.getmonero.org/cli/monero-linux-x64-v${MONERO_VERSION}.tar.bz2" && \
-    tar xvf /tmp/monero.tar.bz2 -C /usr/local/bin "monero-x86_64-linux-gnu-v${MONERO_VERSION}/monerod" && \
-    rm -f /tmp/monero.tar.bz2 && \
+    tar xvf /tmp/monero.tar.bz2 && \
+    cp "/tmp/monero-x86_64-linux-gnu-v${MONERO_VERSION}/monerod" /usr/local/bin/monerod && \
+    rm -rf /tmp/monero.tar.bz2 "/tmp/monero-x86_64-linux-gnu-v${MONERO_VERSION}" && \
     chmod +x /usr/local/bin/monerod
 
 COPY --chmod=0755 entrypoint.sh /
